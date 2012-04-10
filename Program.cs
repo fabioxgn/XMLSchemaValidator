@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Data;
@@ -14,7 +13,7 @@ namespace XMLSchemaValidator
     {
         static void Main(string[] args)
         {
-            if (XML_XSD_Validator.Validate(@"D:\Dev\Monde\Monde\lib-nfse\dunit\NC.XML")) //@"C:\Users\Fábio\Desktop\Abrasf\Exemplos\EnviarLoteRpsEnvio.xml"))
+            if (XML_XSD_Validator.Validate(@"D:\Dev\Monde\Monde-trunk\lib-nfse\dunit\NF.XML")) //@"C:\Users\Fábio\Desktop\Abrasf\Exemplos\EnviarLoteRpsEnvio.xml"))
                 Console.WriteLine("Validação OK");
             else
                 Console.WriteLine(XML_XSD_Validator.GetError());
@@ -35,25 +34,24 @@ namespace XMLSchemaValidator
             {
                 XmlSchemaSet schema = new XmlSchemaSet();
 
-                XmlTextReader tr = new XmlTextReader(GetFileStream(@"C:\Users\Fábio\Desktop\Abrasf\Schemas\servico_enviar_lote_rps_envio.xsd"));
+                XmlTextReader tr = new XmlTextReader(GetFileStream(@"D:\Dev\Monde\dados\Ginfes\schemas_v300\servico_enviar_lote_rps_envio_v03.xsd"));
                 schema.Add(null, tr);
-                tr = new XmlTextReader(GetFileStream(@"C:\Users\Fábio\Desktop\Abrasf\Schemas\tipos_simples.xsd"));
+                //tr = new XmlTextReader(GetFileStream(@"D:\Dev\Monde\dados\Ginfes\schemas_v300\tipos_complexos_v03.xsd"));
+                //schema.Add(null, tr);
+                tr = new XmlTextReader(GetFileStream(@"D:\Dev\Monde\dados\Ginfes\schemas_v300\tipos_v03.xsd"));
                 schema.Add(null, tr);
-                tr = new XmlTextReader(GetFileStream(@"C:\Users\Fábio\Desktop\Abrasf\Schemas\tipos_complexos.xsd"));
+                tr = new XmlTextReader(GetFileStream(@"D:\Dev\Monde\dados\Ginfes\schemas_v300\xmldsig-core-schema20020212_v03.xsd"));
                 schema.Add(null, tr);
-                tr = new XmlTextReader(GetFileStream(@"C:\Users\Fábio\Desktop\Abrasf\Schemas\xmldsig-core-schema20020212.xsd"));
-                schema.Add(null, tr);                      
 
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.ValidationType = ValidationType.Schema;
                 settings.Schemas.Add(schema);
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
                 settings.ValidationEventHandler += new ValidationEventHandler(ErrorHandler);
+                
                 XmlReader reader = XmlReader.Create(XMLPath, settings);
 
-                // Validate XML data
-                while (reader.Read());
-                reader.Close();
+                ValidarXML(reader);
 
                 // exception if validation failed
                 if (numErrors > 0)
@@ -66,6 +64,18 @@ namespace XMLSchemaValidator
                 Console.WriteLine("Exception: " + e.Message);
                 msgError = "Validation failed\r\n" + msgError;
                 return false;
+            }            
+        }
+
+        private static void ValidarXML(XmlReader reader)
+        {
+            try
+            {
+                while (reader.Read()) ;
+            }
+            finally
+            {
+                reader.Close();
             }
         }
 
