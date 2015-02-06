@@ -31,8 +31,10 @@ namespace XMLSchemaValidatorGUI
 
         private void buttonValidar_Click(object sender, EventArgs e)
         {
-            XMLValidator.XMLValidator.Validate(textArquivoXML.Text, textListaXSD.Lines);
-            textResultado.Text = XMLValidator.XMLValidator.GetError();
+            if (XMLValidator.XMLValidator.Validate(textArquivoXML.Text, textListaXSD.Lines))
+                textResultado.Text = "Valid.";
+            else
+                textResultado.Text = XMLValidator.XMLValidator.GetError();
         }
 
     }
